@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Установка Hyprland + hyprstack с настройками keish.
-#   bash <(curl -fsSL https://raw.githubusercontent.com/__REPO__/main/install.sh)
+#   bash <(curl -fsSL https://raw.githubusercontent.com/keishsjsk/hyprstack-dotfiles/main/install.sh)
 # Переменные:
 #   SKIP_DEPS=1    не ставить пакеты через pacman
 #   SKIP_BUILD=1   не собирать hyprstack (если уже установлен)
 #   MONITORS=keish взять мои мониторы (ноутбук 2560x1440 + XT27N1)
 set -euo pipefail
 
-REPO_URL="https://github.com/__REPO__.git"
+REPO_URL="https://github.com/keishsjsk/hyprstack-dotfiles.git"
 UPSTREAM_URL="https://github.com/hase9awa/hyprstack-shell.git"
 UPSTREAM_REV="8e39fad"   # версия hyprstack, на которую рассчитаны правки
 

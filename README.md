@@ -10,7 +10,7 @@ Bluetooth-агент, уведомления о батарее, иконки Mat
 Из TTY или из текущего сеанса Hyprland:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/__REPO__/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/keishsjsk/hyprstack-dotfiles/main/install.sh)
 ```
 
 Скрипт ставит пакеты, собирает hyprstack (зафиксированная версия), переносит старые
