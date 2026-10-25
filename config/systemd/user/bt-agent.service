@@ -1,0 +1,11 @@
+[Unit]
+Description=Bluetooth pairing agent (auto-confirm)
+After=dbus.socket
+
+[Service]
+ExecStart=/usr/bin/python3 -u %h/.local/bin/bt-agent.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

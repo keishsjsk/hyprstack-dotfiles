@@ -1,0 +1,32 @@
+local vars = require("variables")
+local fn   = require("utils.functions")
+
+hl.on("hyprland.start", function()
+    -- XWayland apps (Steam/CEF) read the cursor theme/size from X resources
+    hl.exec_cmd(string.format("printf 'Xcursor.theme: %s\\nXcursor.size: %d\\n' | xrdb -merge", vars.cursorTheme, vars.cursorSize))
+    if os.getenv("HYPRSTACK_NESTED") ~= "1" then
+        local command = os.getenv("HYPRSTACK_SESSION_COMMAND") or os.getenv("HOME") .. "/.local/bin/hyprstack-session"
+        hl.exec_cmd(string.format("%q", command) .. " start")
+    end
+end)
+
+-- Resizer listeners
+local function apply_resizer_rules(win)
+    local float_center = {
+        hl.dsp.window.float({ action = "on", window = win }),
+        hl.dsp.window.center({ window = win }),
+    }
+    local pip_actions = fn.move_actions(win) or {}
+
+    -- Bitwarden
+    fn.resizer(win, "Bitwarden", 20, 54, float_center, true, "class")                                       -- Native app
+    fn.resizer(win, "^Extension: %(Bitwarden Password Manager%) %- Bitwarden", 20, 54, float_center, false) -- Firefox
+    fn.resizer(win, "nngceckbapebfimnlniiiahkandclblb", 20, 54, float_center, true, "class")                -- Chromium
+
+    -- Picture in picture
+    fn.resizer(win, "^Picture[- ]in[- ][Pp]icture$", 0, 0, pip_actions, false)
+    fn.resizer(win, "^Картинка в картинке$", 0, 0, pip_actions, false) -- Russian Firefox
+end
+
+hl.on("window.title", apply_resizer_rules)
+hl.on("window.open", apply_resizer_rules)

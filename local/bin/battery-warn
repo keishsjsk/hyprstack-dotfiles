@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Low battery notifications: warns once at 20% and once at 10% per discharge.
+
+BAT=$(ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -n1)
+[ -z "$BAT" ] && exit 0
+
+SOUNDS=/usr/share/sounds/freedesktop/stereo
+
+# Plays a sound several times in a row so it stands out from other notifications.
+play() {
+    for _ in $(seq "$2"); do
+        pw-play "$SOUNDS/$1" 2>/dev/null || paplay "$SOUNDS/$1" 2>/dev/null
+    done &
+}
+
+warned20=0
+warned10=0
+
+while true; do
+    cap=$(cat "$BAT/capacity")
+    status=$(cat "$BAT/status")
+
+    if [ "$status" = "Discharging" ]; then
+        if [ "$cap" -le 10 ] && [ "$warned10" -eq 0 ]; then
+            notify-send -u critical -a "Батарея" -i battery-caution \
+                "Батарея почти разряжена: ${cap}%" "Срочно подключите зарядку!"
+            play alarm-clock-elapsed.oga 2
+            warned10=1
+            warned20=1
+        elif [ "$cap" -le 20 ] && [ "$warned20" -eq 0 ]; then
+            notify-send -u critical -a "Батарея" -i battery-low \
+                "Низкий заряд батареи: ${cap}%" "Подключите зарядное устройство."
+            play dialog-warning.oga 3
+            warned20=1
+        fi
+    else
+        warned20=0
+        warned10=0
+    fi
+
+    sleep 30
+done
